@@ -35,9 +35,9 @@ letters = characters_check(characters)
 nums = numbers_check(numbers)
 symbs = symbols_check(symbols)
 
-password = password_output(letters,nums,symbs)
+def generate():
+    return password_output(letters,nums,symbs)
 
-print(f"Here is your password: {password}")
 
 
      

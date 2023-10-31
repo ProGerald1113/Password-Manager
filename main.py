@@ -1,10 +1,12 @@
 from password_generator import generate
 import os 
 import csv
-from datetime import*
+from datetime import timedelta, date
 
-date = date.today()
-expiry = date + timedelta(days=60) 
+current_date = []
+test_date = date.today()
+expiry = test_date + timedelta(days=60)
+current_date.append(test_date)
 
 path = "Passwords.csv"
 if os.path.exists(path):
@@ -13,17 +15,17 @@ if os.path.exists(path):
 else:
     print("necessary requirements have not been met fixing issues...")
     with open(path ,"w") as file:
-        fieldnames = ["Password ", " used for " " Creation Date ",  " Expiry Date"]
+        fieldnames = ["Password " " used for " " Creation Date " " Expiry Date"]
         password_writer = csv.DictWriter(file, fieldnames=fieldnames)
         password_writer.writeheader()
         
 
 def file_writer(filename,info):
     with open(filename, "w") as file:
-        fieldnames = ["Password ", " used for " , " Creation Date ",  "Expiry Date"]
+        fieldnames = ["Password " " used for "  " Creation Date "  " Expiry Date"]
         password_writer = csv.DictWriter(file, fieldnames=fieldnames)
         password_writer.writeheader()
-        password_writer.writerows(info)
+        password_writer.writerow(info)
         
 
 def file_reader(file):
@@ -48,12 +50,13 @@ while Running:
 
     if choice == "1":
         print("What is your password being used for?")
+
         print("Sidenote: if you dont't wish to specify press 2 ")
 
         usage = input("Write here what its being used for:")
-        details = {"password":password_output,"Usage":usage,"date":date,"Expiry":expiry}
-        result = list(info.append(details))
-        file_writer(file,result)
+        details = {"password":list(password_output),"Usage":list(usage),"date":current_date,"Expiry":list(expiry)}
+        info.append(details)
+        file_writer(file,info)
 
 
 

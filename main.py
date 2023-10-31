@@ -1,7 +1,6 @@
 from password_generator import generate
 import time
 import os 
-import csv
 from datetime import timedelta, date
 from rich.layout import Layout
 from rich.console import Console
@@ -12,12 +11,10 @@ console = Console(style="bold ")
 header = Layout(name="header",size=3)
 other_Stuff = Layout(name = "footer",size=10)
 
-current_date = []
-test_date = date.today()
-expiry = test_date + timedelta(days=60)
-current_date.append(test_date)
+date = date.today()
+expiry = date + timedelta(days=60)
 
-path = "Passwords.csv"
+path = "Passwords.txt"
 if os.path.exists(path):
     pass
 
@@ -31,23 +28,19 @@ else:
     time.sleep(1)
     
     with open(path ,"w") as file:
-        fieldnames = ["Password " " Used for " " Creation Date " " Expiry Date"]
-        password_writer = csv.DictWriter(file, fieldnames=fieldnames)
-        password_writer.writeheader()
-        
+        file.write ("Password  Used for  Creation Date  Expiry Date\n")
+
 
 def file_writer(filename,info):
     with open(filename, "w") as file:
-        fieldnames = ["Password " " Used for "  " Creation Date "  " Expiry Date"]
-        password_writer = csv.DictWriter(file, fieldnames=fieldnames)
-        password_writer.writeheader()
-        password_writer.writerow(info)
+        file.write ("Password  Used for  Creation Date  Expiry Date\n")
+        for stuff in info:
+            print(stuff)
         
-
+        
 def file_reader(file):
     with open(file, "r") as file:
-        password_reader = csv.DictReader(file)
-        for row in password_reader:
+        for row in file:
             print(row)
 
 Running = True
@@ -57,7 +50,6 @@ file = "Passwords.csv"
 
 while Running:
 
-    
     console.print("Welcome to your password manager!!!")
     
     console.print("Press 1 to start the process of creating a password")
@@ -75,7 +67,7 @@ while Running:
 
         usage = console.input("Write here what its being used for:")
         
-        details = {"password":list(password_output),"Usage":list(usage),"date":current_date,"Expiry":list(expiry)}
+        details = {"password":list(password_output),"Usage":list(usage),"date":date,"Expiry":list(expiry)}
         info.append(details)
         file_writer(file,info)
     

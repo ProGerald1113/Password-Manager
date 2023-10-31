@@ -45,7 +45,7 @@ def file_writer(filename,info):
         
 
 def file_reader(file):
-    with open("Passwords.csv", "r") as file:
+    with open(file, "r") as file:
         password_reader = csv.DictReader(file)
         for row in password_reader:
             print(row)

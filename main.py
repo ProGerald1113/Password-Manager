@@ -1,6 +1,7 @@
 from password_generator import generate
 import time
 import os 
+import json
 from datetime import timedelta, date
 from rich.layout import Layout
 from rich.console import Console
@@ -13,6 +14,8 @@ other_Stuff = Layout(name = "footer",size=10)
 
 date = date.today()
 expiry = date + timedelta(days=60)
+
+actual_Date = json.dumps(date)
 
 path = "Passwords.txt"
 if os.path.exists(path):
@@ -35,7 +38,7 @@ def file_writer(filename,info):
     with open(filename, "w") as file:
         file.write ("Password  Used for  Creation Date  Expiry Date\n")
         for stuff in info:
-            print(stuff)
+            file.writelines(stuff)
         
         
 def file_reader(file):
@@ -67,7 +70,7 @@ while Running:
 
         usage = console.input("Write here what its being used for:")
         
-        details = {"password":list(password_output),"Usage":list(usage),"date":date,"Expiry":list(expiry)}
+        details = {"password":list(password_output),"Usage":list(usage),"date":actual_Date,"Expiry":list(expiry)}
         info.append(details)
         file_writer(file,info)
     

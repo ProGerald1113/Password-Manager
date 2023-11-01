@@ -37,6 +37,7 @@ symbs = symbols_check(symbols)
 
 def generate():
     return password_output(letters,nums,symbs)
+print(generate())
 
 
 

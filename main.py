@@ -2,7 +2,7 @@ from password_generator import generate
 import time
 import os 
 import json
-from datetime import timedelta, date
+from datetime import datetime,timedelta,date
 from rich.layout import Layout
 from rich.console import Console
 from rich.text import Text
@@ -12,10 +12,11 @@ console = Console(style="bold ")
 header = Layout(name="header",size=3)
 other_Stuff = Layout(name = "footer",size=10)
 
-date = date.today()
-expiry = date + timedelta(days=60)
+Date = datetime.now()
+expiry = Date + timedelta(days=60) 
 
-actual_Date = json.dumps(date)
+actual_Date = json.dumps(Date.strftime("%d-%m-%Y"))
+actual_Expiry = json.dumps(expiry.strftime("%d-%m-%Y"))
 
 path = "Passwords.txt"
 if os.path.exists(path):
@@ -49,7 +50,7 @@ def file_reader(file):
 Running = True
 password_output = generate()
 info = []
-file = "Passwords.csv"
+file = "Passwords.txt"
 
 while Running:
 
@@ -63,15 +64,15 @@ while Running:
 
 
     if choice == "1":
-        
+
         console.print("What is your password being used for?")
 
         console.print("Sidenote: if you dont't wish to specify leave blank")
 
         usage = console.input("Write here what its being used for:")
+
+        info = {password_output , usage , actual_Date , actual_Expiry}
         
-        details = {"password":list(password_output),"Usage":list(usage),"date":actual_Date,"Expiry":list(expiry)}
-        info.append(details)
         file_writer(file,info)
     
     elif choice == "2":

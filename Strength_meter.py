@@ -1,10 +1,10 @@
-import math
+from math import log2
 
 def strength_meter(password):
     length = len(password)
     possible_symbols = 26
     possible_combos = possible_symbols**length
-    bits_of_Entrophy = round(math.log2(possible_combos),2)
+    bits_of_Entrophy = round(log2(possible_combos),2)
     
     if bits_of_Entrophy <=18.8:
         print("Password is Very Weak")
@@ -19,10 +19,9 @@ def strength_meter(password):
     elif bits_of_Entrophy > 95:
         print("Your Password is Very strong") 
 
-strength_meter("aQ@fdvo94mMp!DadBQu")
 
 
-
+strength_meter("8?k87778888888880909")
 
 
 

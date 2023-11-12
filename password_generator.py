@@ -3,8 +3,8 @@ import random
 import string
 
 
-def characters_check(letters_list):
-     length = 15
+def characters_check(letters_list, length):
+     length = 3 
      selected_few = random.choices(letters_list,k=length)
      random.shuffle(selected_few)
 
@@ -14,17 +14,20 @@ def numbers_check(numbers_list):
      length = 3
      numbers_select = random.choices(numbers_list,k = length)
      random.shuffle(numbers_select)
+
      return int("".join(map(str,numbers_select)))
 
 def symbols_check(symbols_list):
      length = 2
      one_symbol = random.choices(symbols_list,k=length)
      random.shuffle(one_symbol)
+
      return "".join(one_symbol)
 
 def password_output(letters,numbers,symbols):
      password = list(letters) + list(str(numbers)) + list(symbols)
      random.shuffle(password)
+
      return "".join(password)
 
 characters = list(string.ascii_letters)

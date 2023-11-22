@@ -6,7 +6,21 @@ from datetime import datetime,timedelta,date
 from rich.layout import Layout
 from rich.console import Console
 from rich.text import Text
+from cryptography.fernet import Fernet
 
+key = Fernet.generate_key()
+f = Fernet(key)      
+
+def encrypt_file(file,info,filename):
+     
+     with open(filename, "w") as file:
+                file.writelines(info)   
+     
+     with open(filename, "wb") as encrypted_file:
+          text = file.read()
+          encrypted_data = f.encrypt(text)
+          encrypted_file.write(encrypted_data)
+      
 
 console = Console(style="bold ")
 header = Layout(name="header",size=3)
@@ -15,8 +29,8 @@ other_Stuff = Layout(name = "footer",size=10)
 Date = datetime.now()
 expiry = Date + timedelta(days=60) 
 
-actual_Date = json.dumps(Date.strftime("%d-%m-%Y"))
-actual_Expiry = json.dumps(expiry.strftime("%d-%m-%Y"))
+actual_Date = Date.strftime("%d-%m-%Y")
+actual_Expiry = expiry.strftime("%d-%m-%Y")
 
 path = "Passwords.txt"
 if os.path.exists(path):
@@ -32,24 +46,20 @@ else:
     time.sleep(1)
     
     with open(path ,"w") as file:
-        file.write ("Password  Used for  Creation Date  Expiry Date\n")
+        pass
 
 
 def file_writer(filename,info):
     with open(filename, "w") as file:
-        file.write ("Password  Used for  Creation Date  Expiry Date\n")
-        for stuff in info:
-            file.writelines(stuff)
+                file.writelines(info)      
         
-        
-def file_reader(file):
-    with open(file, "r") as file:
+def file_reader(encrypted_file):
+    with open(encrypted_file, "rb") as file:
         for row in file:
             print(row)
 
 Running = True
 password_output = generate()
-info = []
 file = "Passwords.txt"
 
 while Running:
@@ -71,10 +81,14 @@ while Running:
 
         usage = console.input("Write here what its being used for:")
 
-        info = {password_output , usage , actual_Date , actual_Expiry}
+        General_info = ("Password:  " , password_output , "  Usage:  "  , usage , "  Created:  " , actual_Date , "  Expiry:  " , actual_Expiry)
         
-        file_writer(file,info)
-    
+        filename = "Passwords_encrypted.txt"
+ 
+        encrypt_file(file,General_info,filename)
+
+        
+
     elif choice == "2":
         if os.stat(file).st_size == 0:
             console.print("Currently there are no saved passwords.")

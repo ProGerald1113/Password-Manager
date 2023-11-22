@@ -4,7 +4,7 @@ import string
 
 
 def characters_check(letters_list):
-     length = 13
+     length = 9
      selected_few = random.choices(letters_list,k=length)
      random.shuffle(selected_few)
 
@@ -40,7 +40,7 @@ symbs = symbols_check(symbols)
 
 def generate():
     return password_output(letters,nums,symbs)
-print(generate())
+
 
 
 

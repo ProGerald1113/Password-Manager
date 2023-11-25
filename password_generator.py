@@ -38,6 +38,7 @@ letters = characters_check(characters)
 nums = numbers_check(numbers)
 symbs = symbols_check(symbols)
 
+
 def generate():
     return password_output(letters,nums,symbs)
 

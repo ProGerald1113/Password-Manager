@@ -6,20 +6,11 @@ from datetime import datetime,timedelta,date
 from rich.layout import Layout
 from rich.console import Console
 from rich.text import Text
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet , MultiFernet
 
 key = Fernet.generate_key()
-f = Fernet(key)      
 
-def encrypt_file(file,info,filename):
-     
-     with open(filename, "w") as file:
-                file.writelines(info)   
-     
-     with open(filename, "wb") as encrypted_file:
-          text = file.read()
-          encrypted_data = f.encrypt(text)
-          encrypted_file.write(encrypted_data)
+f = Fernet(key)
       
 
 console = Console(style="bold ")
@@ -41,26 +32,32 @@ else:
     
     time.sleep(1)
     
-    console.print("Issues fixed now ready for use!")
-    
+    console.print("Issues fixed now running")
     time.sleep(1)
     
     with open(path ,"w") as file:
         pass
 
 
-def file_writer(filename,info):
-    with open(filename, "w") as file:
-                file.writelines(info)      
+def file_writer(original_filename,info,encrypted_file):
+    original_file = open(original_filename, "a+")
+    original_file.writelines(info) 
+
+    with open(encrypt_filename, "wb") as encrypted_file:
+        text = original_file.read()
+        global encrypted_data
+        encrypted_data = f.encrypt(text.encode())
+        encrypted_file.write(encrypted_data)
         
 def file_reader(encrypted_file):
-    with open(encrypted_file, "rb") as file:
-        for row in file:
-            print(row)
+    with open(encrypted_file, "rb") as file:  
+        print(f.decrypt(encrypted_data.decode()))
+        
 
 Running = True
 password_output = generate()
-file = "Passwords.txt"
+Original_file = "Passwords.txt"
+encrypt_filename = "Passwords_encrypted.txt"
 
 while Running:
 
@@ -83,17 +80,15 @@ while Running:
 
         General_info = ("Password:  " , password_output , "  Usage:  "  , usage , "  Created:  " , actual_Date , "  Expiry:  " , actual_Expiry)
         
-        filename = "Passwords_encrypted.txt"
+        file_writer(Original_file,General_info,encrypt_filename)
+
  
-        encrypt_file(file,General_info,filename)
-
-        
-
     elif choice == "2":
-        if os.stat(file).st_size == 0:
+
+        if os.stat(encrypt_filename).st_size == 0:
             console.print("Currently there are no saved passwords.")
         else:
-            file_reader(file)
+            file_reader(encrypt_filename)
 
 
     elif choice == "3":

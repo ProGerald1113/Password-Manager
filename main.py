@@ -24,6 +24,7 @@ actual_Date = Date.strftime("%d-%m-%Y")
 actual_Expiry = expiry.strftime("%d-%m-%Y")
 
 path = "Passwords.txt"
+
 if os.path.exists(path):
     pass
 
@@ -35,9 +36,8 @@ else:
     console.print("Issues fixed now running")
     time.sleep(1)
     
-    with open(path ,"w") as file:
+    with open(path,"w") as file:
         pass
-
 
 def file_writer(original_filename,info,encrypted_file):
     original_file = open(original_filename, "a+")
@@ -45,13 +45,14 @@ def file_writer(original_filename,info,encrypted_file):
 
     with open(encrypt_filename, "wb") as encrypted_file:
         text = original_file.read()
-        global encrypted_data
         encrypted_data = f.encrypt(text.encode())
         encrypted_file.write(encrypted_data)
         
 def file_reader(encrypted_file):
-    with open(encrypted_file, "rb") as file:  
-        print(f.decrypt(encrypted_data.decode()))
+        file = open(encrypted_file,"rb")
+        data = file.read()
+        decryted_data = f.decrypt(data)
+        print(decryted_data)
         
 
 Running = True

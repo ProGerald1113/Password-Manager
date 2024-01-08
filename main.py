@@ -6,7 +6,7 @@ from datetime import datetime,timedelta,date
 from rich.layout import Layout
 from rich.console import Console
 from rich.text import Text
-from cryptography.fernet import Fernet , MultiFernet
+from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
 
@@ -24,6 +24,7 @@ actual_Date = Date.strftime("%d-%m-%Y")
 actual_Expiry = expiry.strftime("%d-%m-%Y")
 
 path = "Passwords.txt"
+path2 = "Passwords_encrypted.txt"
 
 if os.path.exists(path):
     pass
@@ -38,21 +39,18 @@ else:
     
     with open(path,"w") as file:
         pass
-
-def file_writer(original_filename,info,encrypted_file):
-    original_file = open(original_filename, "a+")
-    original_file.writelines(info) 
-
-    with open(encrypt_filename, "wb") as encrypted_file:
-        text = original_file.read()
-        encrypted_data = f.encrypt(text.encode())
-        encrypted_file.write(encrypted_data)
         
+
+def file_writer(info,encrypted_file):
+     with open(encrypted_file, "wb") as _file:
+        info_Encrypt = f.encrypt(str(info).encode())
+        _file.writelines(info_Encrypt)
+
 def file_reader(encrypted_file):
-        file = open(encrypted_file,"rb")
-        data = file.read()
-        decryted_data = f.decrypt(data)
-        print(decryted_data)
+        with open(encrypted_file,"rb") as file:
+            data = file.readline()
+            decryted_data = f.decrypt(data.decode())
+            print(decryted_data)
         
 
 Running = True
@@ -81,7 +79,7 @@ while Running:
 
         General_info = ("Password:  " , password_output , "  Usage:  "  , usage , "  Created:  " , actual_Date , "  Expiry:  " , actual_Expiry)
         
-        file_writer(Original_file,General_info,encrypt_filename)
+        file_writer(General_info,encrypt_filename)
 
  
     elif choice == "2":

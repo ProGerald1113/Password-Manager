@@ -32,7 +32,7 @@ def password_output(letters,numbers,symbols):
 
 characters = list(string.ascii_letters)
 numbers = [1,2,3,4,5,6,7,8,9,0]
-symbols = ["!","@","?","&","£","#"]
+symbols = ["!","@","?","&","$","#"]
 
 letters = characters_check(characters)
 nums = numbers_check(numbers)

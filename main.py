@@ -1,21 +1,11 @@
 from password_generator import generate
 import time
 import os 
-import json
+import hashlib
+import base64
 from datetime import datetime,timedelta,date
-from rich.layout import Layout
-from rich.console import Console
-from rich.text import Text
 from cryptography.fernet import Fernet
 
-key = Fernet.generate_key()
-
-f = Fernet(key)
-      
-
-console = Console(style="bold ")
-header = Layout(name="header",size=3)
-other_Stuff = Layout(name = "footer",size=10)
 
 Date = datetime.now()
 expiry = Date + timedelta(days=60) 
@@ -23,79 +13,106 @@ expiry = Date + timedelta(days=60)
 actual_Date = Date.strftime("%d-%m-%Y")
 actual_Expiry = expiry.strftime("%d-%m-%Y")
 
-path = "Passwords.txt"
-path2 = "Passwords_encrypted.txt"
+path = "info_encrypted.txt"
+login = "login.txt"
 
 if os.path.exists(path):
     pass
 
 else:
-    console.print("Necessary requirements have not been met fixing issues...")
+    print("Necessary requirements have not been met fixing issues...")
     
     time.sleep(1)
     
-    console.print("Issues fixed now running")
+    print("Issues fixed now running")
     time.sleep(1)
     
     with open(path,"w") as file:
         pass
+
+def gen_fernet_key(passcode: bytes) -> bytes:
+    assert isinstance(passcode, bytes)
+    hlib = hashlib.md5()
+    hlib.update(passcode)
+    return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
+
+key = gen_fernet_key()
+f = Fernet(key)
+
+def login():
+    
+    file = "login.txt"
+    
+    with open(file, "w") as f:
+        
+        enter = input("Hello, please set your password for your Password Manager: ")
+
+        m = hashlib.sha256()
+        m.update(enter.encode())
+        password = m.hexdigest()
+        f.write(password)
+
+        time.sleep(1)
+        print("Complete!!!!")
+    
+        f.close()
         
 
 def file_writer(info,encrypted_file):
-     with open(encrypted_file, "wb") as _file:
+     with open(encrypted_file, "ab+") as _file:
         info_Encrypt = f.encrypt(str(info).encode())
-        _file.writelines(info_Encrypt)
+        _file.write(info_Encrypt)
 
 def file_reader(encrypted_file):
         with open(encrypted_file,"rb") as file:
             data = file.readline()
-            decryted_data = f.decrypt(data.decode())
+            decryted_data = f.decrypt(data.decode()) 
             print(decryted_data)
         
 
 Running = True
 password_output = generate()
-Original_file = "Passwords.txt"
-encrypt_filename = "Passwords_encrypted.txt"
 
 while Running:
 
-    console.print("Welcome to your password manager!!!")
+    login()
+
+    print("Welcome to your password manager!!! ""\n")
     
-    console.print("Press 1 to start the process of creating a password")
-    console.print("Press 2 to see your stored passwords")
-    console.print("Press 3 to quit")
+    print("Press 1 to start the process of creating a password")
+    print("Press 2 to see your stored passwords")
+    print("Press 3 to quit" "\n")
     
-    choice = console.input("Choose an option:")
+    choice = input("Choose an option:")
 
 
     if choice == "1":
 
-        console.print("What is your password being used for?")
+        print("What is your password being used for?")
 
-        console.print("Sidenote: if you dont't wish to specify leave blank")
+        print("Sidenote: if you dont't wish to specify leave blank")
 
-        usage = console.input("Write here what its being used for:")
+        usage = input("Write here what its being used for:")
 
-        General_info = ("Password:  " , password_output , "  Usage:  "  , usage , "  Created:  " , actual_Date , "  Expiry:  " , actual_Expiry)
+        General_info = {"Password: " :  password_output ,  "  Usage: "   : usage ,  " Created : " :  actual_Date ,  "  Expiry:  "  : actual_Expiry}
         
-        file_writer(General_info,encrypt_filename)
+        file_writer(General_info,path)
 
  
     elif choice == "2":
 
-        if os.stat(encrypt_filename).st_size == 0:
-            console.print("Currently there are no saved passwords.")
+        if os.stat(path).st_size == 0:
+            print("Currently there are no saved passwords.")
         else:
-            file_reader(encrypt_filename)
+            file_reader(path)
 
 
     elif choice == "3":
         Running = False
-        console.print("Byee!!!")
+        print("Byee!!!")
     
     else:
-        console.print("Invalid Option")
+        print("Invalid Option")
 
 
     

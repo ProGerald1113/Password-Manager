@@ -16,6 +16,16 @@ actual_Expiry = expiry.strftime("%d-%m-%Y")
 path = "info_encrypted.txt"
 login = "login.txt"
 
+if os.path.exists(login):
+    pass
+
+else:
+    with open(login , "ab+") as f:
+        pass
+
+f = open(login, "r")
+password = f.read()
+
 if os.path.exists(path):
     pass
 
@@ -35,6 +45,9 @@ def gen_fernet_key(passcode: bytes) -> bytes:
     hlib = hashlib.md5()
     hlib.update(passcode)
     return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
+
+key = gen_fernet_key(password)
+f = Fernet(key)
         
 
 def file_writer(info,encrypted_file):
@@ -47,29 +60,46 @@ def file_reader(encrypted_file):
             data = file.readline()
             decryted_data = f.decrypt(data.decode()) 
             print(decryted_data)
-        
+
 
 Running = True
 password_output = generate()
 
 while Running:
-    
-    with open(login, "w") as f:
+
+
+    if os.path.exists(login):
         
-        enter = input("Hello, please set your password for your Password Manager: ")
+        enter = input("Hello, please enter your password for your Password Manager: ")
+        f = open(login, "r")
+        password = f.read()
 
         m = hashlib.sha256()
         m.update(enter.encode())
-        password = m.hexdigest()
-        f.write(password)
+        user_entered = m.hexdigest()
+        
+        if user_entered == password:
+            print("correct!")
 
-        time.sleep(1)
-        print("Complete!!!!")
+        else:
+            print("Wrong!!!!!")    
+
+    else:
+        
+        with open(login, "w") as f:
+            
+            set = input("Hello, please set your password for your Password Manager: ")
+
+            m = hashlib.sha256()
+            m.update(set.encode())
+            password = m.hexdigest()
+            f.write(password)
+
+            time.sleep(1)
+            print("Complete!!!!")
     
-        f.close()
+            f.close()
 
-    passcode = login.read()  
-    key = gen_fernet_key(passcode)
 
     print("Welcome to your password manager!!! ""\n")
     

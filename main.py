@@ -35,27 +35,6 @@ def gen_fernet_key(passcode: bytes) -> bytes:
     hlib = hashlib.md5()
     hlib.update(passcode)
     return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
-
-key = gen_fernet_key()
-f = Fernet(key)
-
-def login():
-    
-    file = "login.txt"
-    
-    with open(file, "w") as f:
-        
-        enter = input("Hello, please set your password for your Password Manager: ")
-
-        m = hashlib.sha256()
-        m.update(enter.encode())
-        password = m.hexdigest()
-        f.write(password)
-
-        time.sleep(1)
-        print("Complete!!!!")
-    
-        f.close()
         
 
 def file_writer(info,encrypted_file):
@@ -74,8 +53,23 @@ Running = True
 password_output = generate()
 
 while Running:
+    
+    with open(login, "w") as f:
+        
+        enter = input("Hello, please set your password for your Password Manager: ")
 
-    login()
+        m = hashlib.sha256()
+        m.update(enter.encode())
+        password = m.hexdigest()
+        f.write(password)
+
+        time.sleep(1)
+        print("Complete!!!!")
+    
+        f.close()
+
+    passcode = login.read()  
+    key = gen_fernet_key(passcode)
 
     print("Welcome to your password manager!!! ""\n")
     

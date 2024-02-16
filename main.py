@@ -13,18 +13,14 @@ expiry = Date + timedelta(days=60)
 actual_Date = Date.strftime("%d-%m-%Y")
 actual_Expiry = expiry.strftime("%d-%m-%Y")
 
+def gen_fernet_key(passcode: bytes) -> bytes:
+      assert isinstance(passcode, bytes)
+      hlib = hashlib.md5()
+      hlib.update(passcode)
+      return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
+
 path = "info_encrypted.txt"
-login = "login.txt"
-
-if os.path.exists(login):
-    pass
-
-else:
-    with open(login , "ab+") as f:
-        pass
-
-f = open(login, "r")
-password = f.read()
+passwd = "password.txt"
 
 if os.path.exists(path):
     pass
@@ -40,15 +36,28 @@ else:
     with open(path,"w") as file:
         pass
 
-def gen_fernet_key(passcode: bytes) -> bytes:
-    assert isinstance(passcode, bytes)
-    hlib = hashlib.md5()
-    hlib.update(passcode)
-    return base64.urlsafe_b64encode(hlib.hexdigest().encode('latin-1'))
+if os.path.exists(passwd):
+    file = open(passwd , "r")
+    global Enter
+    Enter = input("Enter password: ")
+    password = hashlib.sha256(Enter.encode()).hexdigest()
+    Actual_passwd = file.read()
+    if Actual_passwd == str(password):
+        print("Correct password")
+      
+    else:
+        print("FLIP OFF")
 
-key = gen_fernet_key(password)
+else:
+    set = input("Set password: ")
+    with open(passwd, "w") as f:
+      thingy = hashlib.sha256(set.encode('utf-8')).hexdigest()
+      f.write(str(thingy))
+
+file = open(passwd,"r")
+password = file.read()
+key = gen_fernet_key(Enter)
 f = Fernet(key)
-        
 
 def file_writer(info,encrypted_file):
      with open(encrypted_file, "ab+") as _file:
@@ -66,40 +75,6 @@ Running = True
 password_output = generate()
 
 while Running:
-
-
-    if os.path.exists(login):
-        
-        enter = input("Hello, please enter your password for your Password Manager: ")
-        f = open(login, "r")
-        password = f.read()
-
-        m = hashlib.sha256()
-        m.update(enter.encode())
-        user_entered = m.hexdigest()
-        
-        if user_entered == password:
-            print("correct!")
-
-        else:
-            print("Wrong!!!!!")    
-
-    else:
-        
-        with open(login, "w") as f:
-            
-            set = input("Hello, please set your password for your Password Manager: ")
-
-            m = hashlib.sha256()
-            m.update(set.encode())
-            password = m.hexdigest()
-            f.write(password)
-
-            time.sleep(1)
-            print("Complete!!!!")
-    
-            f.close()
-
 
     print("Welcome to your password manager!!! ""\n")
     
@@ -127,8 +102,11 @@ while Running:
 
         if os.stat(path).st_size == 0:
             print("Currently there are no saved passwords.")
+
         else:
+
             file_reader(path)
+
 
 
     elif choice == "3":

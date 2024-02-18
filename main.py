@@ -38,13 +38,12 @@ else:
 
 if os.path.exists(passwd):
     file = open(passwd , "r")
-    global Enter
     Enter = input("Enter password: ")
     password = hashlib.sha256(Enter.encode()).hexdigest()
     Actual_passwd = file.read()
     if Actual_passwd == str(password):
         print("Correct password")
-      
+        key = gen_fernet_key(Enter.encode())
     else:
         print("FLIP OFF")
 
@@ -53,10 +52,10 @@ else:
     with open(passwd, "w") as f:
       thingy = hashlib.sha256(set.encode('utf-8')).hexdigest()
       f.write(str(thingy))
+      key = gen_fernet_key(set.encode())
 
 file = open(passwd,"r")
 password = file.read()
-key = gen_fernet_key(Enter)
 f = Fernet(key)
 
 def file_writer(info,encrypted_file):

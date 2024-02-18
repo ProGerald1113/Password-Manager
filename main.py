@@ -36,27 +36,35 @@ else:
     with open(path,"w") as file:
         pass
 
-if os.path.exists(passwd):
-    file = open(passwd , "r")
-    global Enter
-    Enter = input("Enter password: ")
-    password = hashlib.sha256(Enter.encode()).hexdigest()
-    Actual_passwd = file.read()
-    if Actual_passwd == str(password):
-        print("Correct password")
+def encode_Str():
+    if os.path.exists(passwd):
+        file = open(passwd , "r")
+        Enter = input("Enter password: ")
+       
+        password = hashlib.sha256(Enter.encode()).hexdigest()
+        Actual_passwd = file.read()
+        
+        if Actual_passwd == str(password):
+            print("Correct password")
       
+        else:
+            print("Fuck OFF")
+            exit()
+        
+        return Enter.encode()
+
     else:
-        print("FLIP OFF")
+        set = input("Set password: ")
+        with open(passwd, "w") as f:
+            thingy = hashlib.sha256(set.encode('utf-8')).hexdigest()
+            f.write(str(thingy))
 
-else:
-    set = input("Set password: ")
-    with open(passwd, "w") as f:
-      thingy = hashlib.sha256(set.encode('utf-8')).hexdigest()
-      f.write(str(thingy))
+        return set.encode()
 
+encoded_thing = encode_Str()
 file = open(passwd,"r")
 password = file.read()
-key = gen_fernet_key(Enter)
+key = gen_fernet_key(encoded_thing)
 f = Fernet(key)
 
 def file_writer(info,encrypted_file):
